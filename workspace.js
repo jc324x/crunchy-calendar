@@ -79,27 +79,36 @@ function dateFromFormResponse(time, date) {
   return result;
 }
 
-function createSingleDayCalendarEventWithAttachment(rsp, cal, file) {
-  var id    = cal.getId();
+function createSingleDayCalendarEventWithAttachment(rsp, cal, file, timezone) {
+  Logger.log(rsp);
+  var id       = cal.getId();
   var startISO = dateFromFormResponse(rsp.start, rsp.date).toISOString();
   var endISO   = dateFromFormResponse(rsp.end, rsp.date).toISOString();
-  var event = {
 
-    // start: {dateTime: start.toISOString()},
-    // end: {dateTime: end.toISOString()},
-    start: {dateTime: startISO},
-    end: {dateTime: startISO},
+  var event = {
+    'start': {
+      'dateTime': startISO,
+      'timeZone': timezone
+    },
+    'end' : {
+      'dateTime': endISO,
+      'timeZone': timezone
+    },
     summary: rsp.title,
     location: rsp.location,
     description: rsp.description,
-    // attachments: [{
-    //   fileUrl: file.getUrl(),
-    //   title: file.getTitle()
-    // }]
+    attachments: [{
+      fileUrl: file.getUrl(),
+      title: "Testing title"
+    }]
   };
 
   Logger.log(event);
 
+// 'attendees': [
+//     {'email': 'lpage@example.com'},
+//     {'email': 'sbrin@example.com'}
+//   ],
   Calendar.Events.insert(event, id, {"supportsAttachments" : true});
 }
 
@@ -108,6 +117,5 @@ function testing() {
   var cal  = getCalendarByName("Development");
   var file = DriveApp.getFileById("1Kl3uXKHNLW5SuFhN3v2TpnE7rDbkWhx96mlynVPV42A");
   var rsp  = lastFormResponseAsObject(form);
-  Logger.log(rsp);
-  createSingleDayCalendarEventWithAttachment(rsp, cal, file);
+  createSingleDayCalendarEventWithAttachment(rsp, cal, file, "America/Chicago");
 } 
