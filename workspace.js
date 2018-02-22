@@ -109,17 +109,23 @@ function CalendarEvent(summary, location, description, start, end, attachments, 
 
 function CalendarDate(time, date, timezone) {
   Logger.log("date - " + date);
+  Logger.log("time - " + time);
   var hours   = time.split(":")[0];
   var minutes = time.split(":")[1];
   var dateObj = new Date (date);
   dateObj.setHours(hours);
   dateObj.setMinutes(minutes);
-  Logger.log(dateObj);
+  Logger.log("locale time string - " + dateObj.toLocaleTimeString());
   var dateTime = dateObj.toISOString();
   Logger.log(dateTime);
   this.dateTime = dateTime;
   this.timeZone = timezone;
 }
+
+// 'start': {
+//     'dateTime': '2015-05-28T09:00:00-07:00',
+//     'timeZone': 'America/Los_Angeles'
+//   },
 
 function findFileAtPath(path, mime) {
   if (mime !== undefined) {
@@ -458,19 +464,19 @@ function testing() {
   var form        = FormApp.getActiveForm();
   var cal         = getCalendarByName("Development");
   var rsp         = lastFormResponseAsObject(form);
-  Logger.log(rsp);
+  // Logger.log(rsp);
   var naming      = findReplaceInString("%title% - %location% %date%", rsp);
   var template    = verifyFileAtPath("crunchy-calendar/template", "document");
   var fldr        = verifyFolderPath("crunchy-calendar/exports");
   var file        = documentMergeObject(naming, template, fldr, rsp);
   var timezone    = "America/Chicago";
   var start       = new CalendarDate(rsp.start, rsp.date, timezone);
-  Logger.log("start - " + start);
+  Logger.log("start - " + start.dateTime);
   var end         = new CalendarDate(rsp.end, rsp.date, timezone);
-  Logger.log("end - " + end);
+  Logger.log("end - " + end.dateTime);
   var attachment  = new CalendarAttachment(file);
   var attachments = arrayOfObjectsFromArguments(attachment);
   var event       = new CalendarEvent(rsp.title, rsp.location, rsp.description, start, end, attachments);
-  Logger.log(event);
+  // Logger.log(event);
   createSingleDayCalendarEventWithAttachment(event, cal);
 } 
