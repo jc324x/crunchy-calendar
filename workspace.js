@@ -108,24 +108,10 @@ function CalendarEvent(summary, location, description, start, end, attachments, 
 }
 
 function CalendarDate(time, date, timezone) {
-  Logger.log("date - " + date);
-  Logger.log("time - " + time);
-  var hours   = time.split(":")[0];
-  var minutes = time.split(":")[1];
-  var dateObj = new Date (date);
-  dateObj.setHours(hours);
-  dateObj.setMinutes(minutes);
-  Logger.log("locale time string - " + dateObj.toLocaleTimeString());
-  var dateTime = dateObj.toISOString();
-  Logger.log(dateTime);
+  var dateTime  = date + "T" + time + ":00-06:00";
   this.dateTime = dateTime;
   this.timeZone = timezone;
 }
-
-// 'start': {
-//     'dateTime': '2015-05-28T09:00:00-07:00',
-//     'timeZone': 'America/Los_Angeles'
-//   },
 
 function findFileAtPath(path, mime) {
   if (mime !== undefined) {
@@ -150,7 +136,6 @@ function matchMIMEType(file, mime) {
     return false;
   }
 } 
-
 
 function CalendarAttendee(email) {
   this.email = email;
