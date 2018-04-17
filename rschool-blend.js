@@ -71,7 +71,6 @@ function findObjectInArrayOfObjects(arrObj, prop, val) {
   }
 }
 
-
 // end
 
 function objectFromEmailBody(body) {
@@ -120,10 +119,28 @@ function formItemByTitleType(arrObj, title, type) {
       case "ParagraphTextItem": return obj.item.asParagraphTextItem();
       case "ScaleItem": return obj.item.asScaleItem();
       case "SectionHeaderItem": return obj.item.asSectionHeaderItem();
+      case "TimeItem": return obj.item.asTimeItem();
       case "TextItem": return obj.item.asTextItem();
       case "VideoItem": return obj.item.asVideoItem();
       default: return false;
   }
+}
+
+// appendFormResponseObject
+// accommodate a second property
+
+function appendFormResponse(arrObj, title, type, object, prop, formResponse) {
+  var item     = formItemByTitleType(arrObj, title, type);
+  var response = item.createResponse(object[prop]);
+  return formResponse.withItemResponse(response);
+}
+
+// appendFormResponseObjectWithTime
+
+function appendFormResponseSetTime(arrObj, title, type, start, end, formResponse) {
+  var item     = formItemByTitleType(arrObj, title, type);
+  var response = item.createResponse(start, end);
+  return formResponse.withItemResponse(response);
 }
 
 function testingPreFilledForm() {
@@ -132,27 +149,20 @@ function testingPreFilledForm() {
     var thread   = threads[i];
     var messages = thread.getMessages();
     for (var j = 0; j < messages.length; j++) {
-      var message               = messages[i];
-      var body                  = message.getPlainBody();
-      var object                = objectFromEmailBody(body);
-      var form                  = FormApp.getActiveForm();
-      var formResponse          = form.createResponse();
-      var items                 = arrayOfObjectsForFormItems(form);
-
-      var eventTitleItem        = formItemByTitleType(items, "Event Title", "TextItem");
-      var eventTitleResponse    = eventTitleItem.createResponse(object.event_title);
-      formResponse.withItemResponse(eventTitleResponse);
-      Logger.log("TEST A");
-      // var dateItem              = formItemByTitleType(items, "Date", "DateItem");
-      // var dateItemResponse      = dateItem.createResponse(object.date);
-      // formResponse.withItemResponse(dateItemResponse);
-      // Logger.log("TEST B");
-      // var startTimeItem         = formItemByTitleType(items, "Start Time", "TimeItem");
-      // var startTimeItemResponse = startTimeItem.createResponse(object.start_time);
-      // formResponse.withItemResponse(startTimeItemResponse);
-      // Logger.log("TEST C");
-      // var endTimeItem    = formItemByTitleType(items, "End Time", "TimeItem");
-       var url = formResponse.toPrefilledUrl();
+      var message       = messages[i];
+      var body          = message.getPlainBody();
+      var object        = objectFromEmailBody(body);
+      object.date       = new Date();
+      object.start_time = [2, 3];
+      object.end_time   = [2, 4];
+      var form          = FormApp.getActiveForm();
+      var response      = form.createResponse();
+      var items         = arrayOfObjectsForFormItems(form);
+      response          = appendFormResponse(items, "Event Title", "TextItem", object, "event_title", response);
+      response          = appendFormResponse(items, "Date", "DateItem", object, "date", response);
+      response          = appendFormResponseSetTime(items, "Start Time", "TimeItem", 0, 30, response);
+      response          = appendFormResponseSetTime(items, "End Time", "TimeItem", 4, 30, response);
+       var url          = response.toPrefilledUrl();
       Logger.log(url);  // You could do something more useful here.
     } 
   } 
