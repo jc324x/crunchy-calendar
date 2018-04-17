@@ -126,8 +126,12 @@ function formItemByTitleType(arrObj, title, type) {
   }
 }
 
-// appendFormResponseObject
-// accommodate a second property
+/* next...
+ * start_time 4:30 PM -> into start_time_hours -> 16, start_time_minutes -> 30
+ * date -> new Date (date?)
+*/ 
+
+// appendFormResponse(arrObj, title, type, val, formResponse)
 
 function appendFormResponse(arrObj, title, type, object, prop, formResponse) {
   var item     = formItemByTitleType(arrObj, title, type);
@@ -135,7 +139,7 @@ function appendFormResponse(arrObj, title, type, object, prop, formResponse) {
   return formResponse.withItemResponse(response);
 }
 
-// appendFormResponseObjectWithTime
+// appendFormResponseDateTime(arrObj, title, type, hour, minute, formResponse)
 
 function appendFormResponseSetTime(arrObj, title, type, start, end, formResponse) {
   var item     = formItemByTitleType(arrObj, title, type);
@@ -153,8 +157,6 @@ function testingPreFilledForm() {
       var body          = message.getPlainBody();
       var object        = objectFromEmailBody(body);
       object.date       = new Date();
-      object.start_time = [2, 3];
-      object.end_time   = [2, 4];
       var form          = FormApp.getActiveForm();
       var response      = form.createResponse();
       var items         = arrayOfObjectsForFormItems(form);
@@ -162,9 +164,22 @@ function testingPreFilledForm() {
       response          = appendFormResponse(items, "Date", "DateItem", object, "date", response);
       response          = appendFormResponseSetTime(items, "Start Time", "TimeItem", 0, 30, response);
       response          = appendFormResponseSetTime(items, "End Time", "TimeItem", 4, 30, response);
-       var url          = response.toPrefilledUrl();
-      Logger.log(url);  // You could do something more useful here.
+      var url          = response.toPrefilledUrl();
+      Logger.log(url);  
     } 
   } 
 }
 
+// -- NO EPF --
+// createEventInGoogleCalendar()
+// sendConfirmationEmail()
+
+// -- EPF NEEDED --
+// createEventInGoogleCalendar()
+// sendEPFRequest()
+// ...()
+
+// Brainstorm
+// the form needs to match up the email object with the form response to check for incongruities? 
+// wait. is there a way to create an inaccessible page and then attach responses to it? hmm...
+// could have Id of Gmail message, and the full calendar event title "Parent Meeting (MS, Bovey)"
