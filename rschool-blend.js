@@ -1,5 +1,7 @@
 // default config file location is: google-apps-script-config/crunchy-calendar
 
+// now would be a good time to clean up my cheat-sheet on forms
+
 // 
 
 // -- Check String for Substring
