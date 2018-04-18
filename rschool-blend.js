@@ -73,6 +73,7 @@ function findObjectInArrayOfObjects(arrObj, prop, val) {
 
 // end
 
+// validation? or garbage in garbage out?
 function objectFromEmailBody(body) {
   var result = {};
   var lines  = body.split("\n");
@@ -131,15 +132,15 @@ function formItemByTitleType(arrObj, title, type) {
  * date -> new Date (date?)
 */ 
 
-// appendFormResponse(arrObj, title, type, val, formResponse)
+// appendFormResponse(arrObj, title, type, val, val2, formResponse)
+// appendFormResponse(items, "Event Title", "TextItem", object.event_title, null, formResponse);
+// appendFormResponse(items, "Start Time", "TimeItem", object.event_start_minutes, object.event_start_hours, null, formResponse);
 
 function appendFormResponse(arrObj, title, type, object, prop, formResponse) {
   var item     = formItemByTitleType(arrObj, title, type);
   var response = item.createResponse(object[prop]);
   return formResponse.withItemResponse(response);
 }
-
-// appendFormResponseDateTime(arrObj, title, type, hour, minute, formResponse)
 
 function appendFormResponseSetTime(arrObj, title, type, start, end, formResponse) {
   var item     = formItemByTitleType(arrObj, title, type);
@@ -171,6 +172,7 @@ function testingPreFilledForm() {
 }
 
 // -- NO EPF --
+ 
 // createEventInGoogleCalendar()
 // sendConfirmationEmail()
 
@@ -183,3 +185,9 @@ function testingPreFilledForm() {
 // the form needs to match up the email object with the form response to check for incongruities? 
 // wait. is there a way to create an inaccessible page and then attach responses to it? hmm...
 // could have Id of Gmail message, and the full calendar event title "Parent Meeting (MS, Bovey)"
+// 
+ 
+// object.start_time -> object.start_time_minutes, object.start_time_hours | from what's given in rSchool
+// where should JSON files be stored and how? what is their purpose?
+// get events matching "- Pending EPF", build array, send prompt emails | *need* to attach events or just find in folder?
+// changes to event -> get event Id, match to JSON object
